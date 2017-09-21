@@ -20,6 +20,7 @@ void CommandServer::listen(const QString &name)
 
         connect(socket, &QLocalSocket::disconnected, [=]() {
             socket->deleteLater();
+            m_socket = NULL;
         });
 
         connect(socket, &QLocalSocket::readyRead, [=]() {
@@ -34,6 +35,7 @@ void CommandServer::sendReply(const QString &reply)
         return;
 
     m_socket->write(reply.toLocal8Bit());
+    m_socket->close();
 }
 
 void CommandServer::parseData(QLocalSocket *socket, const QByteArray &data)
@@ -47,9 +49,5 @@ void CommandServer::parseData(QLocalSocket *socket, const QByteArray &data)
         m_socket = socket;
 
         emit commandReceived(line);
-
-        m_socket = NULL;
     }
-
-    socket->close();
 }
