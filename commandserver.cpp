@@ -6,6 +6,7 @@
 CommandServer::CommandServer(QObject *parent) : QObject(parent)
 {
     m_server = new QLocalServer;
+    m_socket = NULL;
 }
 
 void CommandServer::listen(const QString &name)
@@ -17,6 +18,12 @@ void CommandServer::listen(const QString &name)
 
     connect(m_server, &QLocalServer::newConnection, [=]() {
         QLocalSocket *socket = m_server->nextPendingConnection();
+
+        if (m_socket) {
+            qWarning("CommandServer: simultaneous connections are not supported");
+            socket->close();
+            return;
+        }
 
         connect(socket, &QLocalSocket::disconnected, [=]() {
             socket->deleteLater();
