@@ -20,7 +20,7 @@ public slots:
 
 signals:
     void nameChanged(const QString &name);
-    void commandReceived(const QString &command);
+    void commandReceived(const QString &command, const QStringList &args);
 
 private:
     QLocalServer *m_server;

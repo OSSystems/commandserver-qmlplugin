@@ -55,6 +55,8 @@ void CommandServer::parseData(QLocalSocket *socket, const QByteArray &data)
 
         m_socket = socket;
 
-        emit commandReceived(line);
+        QStringList args = line.split(' ');
+
+        emit commandReceived(args.first(), args.mid(1, -1));
     }
 }
